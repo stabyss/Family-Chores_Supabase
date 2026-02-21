@@ -14,50 +14,159 @@
         <p class="subtitle">Be the hero of your household!</p>
 
         <div id="errorMessage"></div>
+        <div id="successMessage"></div>
 
-        <!-- Add New Task Section -->
-        <div class="add-task-section">
-            <div class="input-group">
-                <input 
-                    type="text" 
-                    id="taskInput" 
-                    placeholder="What chore needs to be done?" 
-                    autocomplete="off"
-                >
-                <button id="addBtn" onclick="addTask()">Add Chore</button>
+        <!-- Auth Section -->
+        <div id="authSection" class="auth-section">
+            
+            <!-- Profile Selection (Netflix-style) -->
+            <div id="profileSelection" class="profile-selection">
+                <h2>Who's cleaning?</h2>
+                <div id="profilesList" class="profiles-list">
+                    <div class="loading">Loading profiles...</div>
+                </div>
+                <button class="add-profile-btn" onclick="showSignupForm()">
+                    <span class="add-icon">+</span>
+                    <span>Add Hero</span>
+                </button>
             </div>
+
+            <!-- Password Prompt (shown after selecting profile) -->
+            <div id="passwordPrompt" class="auth-form" style="display: none;">
+                <h2>Welcome back, <span id="selectedProfileName"></span>!</h2>
+                <div class="input-group">
+                    <input 
+                        type="password" 
+                        id="loginPassword" 
+                        placeholder="Enter your password" 
+                        autocomplete="current-password"
+                    >
+                </div>
+                <button onclick="handleProfileLogin()">Login</button>
+                <p class="auth-toggle">
+                    <a href="#" onclick="backToProfiles(event)">← Back to profiles</a>
+                </p>
+            </div>
+
+            <!-- Sign Up Form (for new users) -->
+            <div id="signupForm" class="auth-form" style="display: none;">
+                <h2>Create Your Hero Profile</h2>
+                <div class="input-group">
+                    <input 
+                        type="text" 
+                        id="signupDisplayName" 
+                        placeholder="Display Name (e.g., SuperMom)" 
+                        autocomplete="name"
+                    >
+                </div>
+                <div class="input-group">
+                    <input 
+                        type="password" 
+                        id="signupPassword" 
+                        placeholder="Password" 
+                        autocomplete="new-password"
+                    >
+                </div>
+                <button onclick="handleSignup()">Create Profile</button>
+                <p class="auth-toggle">
+                    <a href="#" onclick="backToProfiles(event)">← Back to profiles</a>
+                </p>
+            </div>
+
         </div>
 
-        <!-- Chores Container -->
-        <div class="chores-container">
-            <!-- Available Chores -->
-            <div class="chore-section">
-                <div class="section-header">
-                    <div class="section-icon available-icon">📋</div>
-                    <span class="section-title">Available Chores</span>
-                    <span class="task-count" id="availableCount">0</span>
+        <!-- Main App Content (hidden until logged in) -->
+        <div id="mainContent" style="display: none;">
+            <div class="user-header">
+                <div class="user-info">
+                    <span id="userDisplayName"></span>
+                    <span id="userPoints" class="points-badge" style="display: none;"></span>
                 </div>
-                <div id="availableTasks" class="task-list">
-                    <div class="loading">Loading tasks...</div>
+                <button class="logout-btn" onclick="handleLogout()">Logout</button>
+            </div>
+
+            <!-- Tab Navigation -->
+            <div class="tab-nav">
+                <button id="tasksTab" class="tab-btn active" onclick="switchTab('tasks')">
+                    📋 Tasks
+                </button>
+                <button id="shopTab" class="tab-btn" onclick="switchTab('shop')">
+                    🎁 Reward Shop
+                </button>
+                <button id="pendingTab" class="tab-btn parent-only" onclick="switchTab('pending')" style="display: none;">
+                    🔔 Pending Redemptions
+                </button>
+            </div>
+
+            <!-- Tasks Tab -->
+            <div id="tasksSection" class="tab-content">
+                <!-- Add New Task Section -->
+                <div class="add-task-section">
+                    <div class="input-group">
+                        <input 
+                            type="text" 
+                            id="taskInput" 
+                            placeholder="What chore needs to be done?" 
+                            autocomplete="off"
+                        >
+                        <button id="addBtn" onclick="addTask()">Add Chore</button>
+                    </div>
+                </div>
+
+                <!-- Chores Container -->
+                <div class="chores-container">
+                    <!-- Available Chores -->
+                    <div class="chore-section">
+                        <div class="section-header">
+                            <div class="section-icon available-icon">📋</div>
+                            <span class="section-title">Available Chores</span>
+                            <span class="task-count" id="availableCount">0</span>
+                        </div>
+                        <div id="availableTasks" class="task-list">
+                            <div class="loading">Loading tasks...</div>
+                        </div>
+                    </div>
+
+                    <!-- Completed Chores -->
+                    <div class="chore-section">
+                        <div class="section-header">
+                            <div class="section-icon completed-icon">✅</div>
+                            <span class="section-title">Completed Chores</span>
+                            <span class="task-count" id="completedCount">0</span>
+                        </div>
+                        <div id="completedTasks" class="task-list">
+                            <div class="loading">Loading tasks...</div>
+                        </div>
+                    </div>
                 </div>
             </div>
 
-            <!-- Completed Chores -->
-            <div class="chore-section">
-                <div class="section-header">
-                    <div class="section-icon completed-icon">✅</div>
-                    <span class="section-title">Completed Chores</span>
-                    <span class="task-count" id="completedCount">0</span>
+            <!-- Reward Shop Tab (Child view) -->
+            <div id="shopSection" class="tab-content" style="display: none;">
+                <div class="shop-header">
+                    <h2>🎁 Reward Shop</h2>
+                    <p class="shop-subtitle">Spend your hard-earned points on awesome rewards!</p>
                 </div>
-                <div id="completedTasks" class="task-list">
-                    <div class="loading">Loading tasks...</div>
+                <div id="rewardsGrid" class="rewards-grid">
+                    <div class="loading">Loading rewards...</div>
+                </div>
+            </div>
+
+            <!-- Pending Redemptions Tab (Parent view) -->
+            <div id="pendingSection" class="tab-content" style="display: none;">
+                <div class="pending-header">
+                    <h2>🔔 Pending Redemptions</h2>
+                    <p class="pending-subtitle">Approve rewards after you've given them to your child.</p>
+                </div>
+                <div id="pendingRedemptions" class="pending-list">
+                    <div class="loading">Loading pending redemptions...</div>
                 </div>
             </div>
         </div>
     </div>
 
     <!-- Realtime Indicator -->
-    <div class="realtime-indicator">
+    <div id="realtimeIndicator" class="realtime-indicator" style="display: none;">
         <div class="pulse"></div>
         <span>Realtime Sync Active</span>
     </div>
