@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hero Tasks</title>
+    <!-- Supabase JS CDN -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <h1>🦸 Hero Tasks</h1>
+        <p class="subtitle">Be the hero of your household!</p>
+
+        <div id="errorMessage"></div>
+
+        <!-- Add New Task Section -->
+        <div class="add-task-section">
+            <div class="input-group">
+                <input 
+                    type="text" 
+                    id="taskInput" 
+                    placeholder="What chore needs to be done?" 
+                    autocomplete="off"
+                >
+                <button id="addBtn" onclick="addTask()">Add Chore</button>
+            </div>
+        </div>
+
+        <!-- Chores Container -->
+        <div class="chores-container">
+            <!-- Available Chores -->
+            <div class="chore-section">
+                <div class="section-header">
+                    <div class="section-icon available-icon">📋</div>
+                    <span class="section-title">Available Chores</span>
+                    <span class="task-count" id="availableCount">0</span>
+                </div>
+                <div id="availableTasks" class="task-list">
+                    <div class="loading">Loading tasks...</div>
+                </div>
+            </div>
+
+            <!-- Completed Chores -->
+            <div class="chore-section">
+                <div class="section-header">
+                    <div class="section-icon completed-icon">✅</div>
+                    <span class="section-title">Completed Chores</span>
+                    <span class="task-count" id="completedCount">0</span>
+                </div>
+                <div id="completedTasks" class="task-list">
+                    <div class="loading">Loading tasks...</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Realtime Indicator -->
+    <div class="realtime-indicator">
+        <div class="pulse"></div>
+        <span>Realtime Sync Active</span>
+    </div>
+
+    <script src="app.js"></script>
+</body>
+</html>
