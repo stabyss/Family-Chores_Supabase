@@ -720,7 +720,7 @@ async function loadPendingRedemptions() {
                 id,
                 created_at,
                 rewards (title, icon),
-                profiles (display_name)
+                profiles!child_id (display_name)
             `)
             .eq('status', 'pending')
             .order('created_at', { ascending: false });
