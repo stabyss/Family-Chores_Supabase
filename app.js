@@ -445,6 +445,80 @@ async function handleLogout() {
 }
 
 // ============================================
+// Change Password Functions
+// ============================================
+
+function showChangePasswordModal() {
+    document.getElementById('changePasswordModal').style.display = 'flex';
+    document.getElementById('currentPassword').value = '';
+    document.getElementById('newPassword').value = '';
+    document.getElementById('confirmPassword').value = '';
+    document.getElementById('currentPassword').focus();
+}
+
+function hideChangePasswordModal() {
+    document.getElementById('changePasswordModal').style.display = 'none';
+    document.getElementById('currentPassword').value = '';
+    document.getElementById('newPassword').value = '';
+    document.getElementById('confirmPassword').value = '';
+}
+
+async function handleChangePassword() {
+    const currentPassword = document.getElementById('currentPassword').value;
+    const newPassword = document.getElementById('newPassword').value;
+    const confirmPassword = document.getElementById('confirmPassword').value;
+    
+    // Validation
+    if (!currentPassword || !newPassword || !confirmPassword) {
+        showError('请填写所有密码字段');
+        return;
+    }
+    
+    if (newPassword.length < 6) {
+        showError('新密码至少需要6位');
+        return;
+    }
+    
+    if (newPassword !== confirmPassword) {
+        showError('两次输入的新密码不一致');
+        return;
+    }
+    
+    if (currentPassword === newPassword) {
+        showError('新密码不能与当前密码相同');
+        return;
+    }
+    
+    try {
+        // Step 1: Verify current password by attempting to sign in
+        const { error: signInError } = await supabaseClient.auth.signInWithPassword({
+            email: currentUser.email,
+            password: currentPassword
+        });
+        
+        if (signInError) {
+            showError('当前密码错误');
+            return;
+        }
+        
+        // Step 2: Update to new password
+        const { error: updateError } = await supabaseClient.auth.updateUser({
+            password: newPassword
+        });
+        
+        if (updateError) throw updateError;
+        
+        // Success
+        hideChangePasswordModal();
+        showSuccess('密码修改成功！');
+        
+    } catch (error) {
+        showError('修改密码失败：' + error.message);
+        console.error('Change password error:', error);
+    }
+}
+
+// ============================================
 // Task Management Functions
 // ============================================
 
@@ -847,6 +921,16 @@ document.addEventListener('DOMContentLoaded', () => {
         signupPassword.addEventListener('keypress', (e) => {
             if (e.key === 'Enter') {
                 handleSignup();
+            }
+        });
+    }
+    
+    // Change password modal - Enter key support
+    const confirmPassword = document.getElementById('confirmPassword');
+    if (confirmPassword) {
+        confirmPassword.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') {
+                handleChangePassword();
             }
         });
     }

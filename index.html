@@ -93,6 +93,7 @@
                     <span id="userDisplayName"></span>
                     <span id="userPoints" class="points-badge" style="display: none;"></span>
                 </div>
+                <button class="change-password-btn" onclick="showChangePasswordModal()" aria-label="修改密码">🔐 修改密码</button>
                 <button class="logout-btn" onclick="handleLogout()" aria-label="退出登录">退出</button>
             </div>
 
@@ -182,8 +183,43 @@
         <span>实时同步中</span>
     </div>
 
+    <!-- Change Password Modal -->
+    <div id="changePasswordModal" class="modal" style="display: none;">
+        <div class="modal-content">
+            <h3>🔐 修改密码</h3>
+            <div class="input-group">
+                <input 
+                    type="password" 
+                    id="currentPassword" 
+                    placeholder="当前密码" 
+                    autocomplete="current-password"
+                >
+            </div>
+            <div class="input-group">
+                <input 
+                    type="password" 
+                    id="newPassword" 
+                    placeholder="新密码（至少6位）" 
+                    autocomplete="new-password"
+                >
+            </div>
+            <div class="input-group">
+                <input 
+                    type="password" 
+                    id="confirmPassword" 
+                    placeholder="确认新密码" 
+                    autocomplete="new-password"
+                >
+            </div>
+            <div class="modal-buttons">
+                <button class="secondary-btn" onclick="hideChangePasswordModal()">取消</button>
+                <button class="primary-btn" onclick="handleChangePassword()">确认修改</button>
+            </div>
+        </div>
+    </div>
+
     <script src="app.js"></script>
     
-    <div class="version-footer">Ver. 0223</div>
+    <div class="version-footer">Ver. 0223F</div>
 </body>
 </html>
