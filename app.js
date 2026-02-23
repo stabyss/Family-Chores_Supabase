@@ -16,6 +16,71 @@ let currentRole = null; // 'parent' or 'child'
 let userPoints = 0;
 let currentTab = 'tasks';
 
+// ============================================
+// Haptic & Sound Feedback
+// ============================================
+
+// Trigger haptic vibration (if supported on device)
+function triggerHaptic() {
+    if (navigator.vibrate) {
+        // Short, crisp vibration pattern
+        navigator.vibrate([50, 30, 50]);
+    }
+}
+
+// Play a sparkle sound effect using Web Audio API
+function playSparkleSound() {
+    try {
+        const audioContext = new (window.AudioContext || window.webkitAudioContext)();
+        
+        // Create oscillator for the sparkle tone
+        const oscillator = audioContext.createOscillator();
+        const gainNode = audioContext.createGain();
+        
+        oscillator.connect(gainNode);
+        gainNode.connect(audioContext.destination);
+        
+        // High pitched, sparkly sound
+        oscillator.type = 'sine';
+        oscillator.frequency.setValueAtTime(1200, audioContext.currentTime);
+        oscillator.frequency.exponentialRampToValueAtTime(1800, audioContext.currentTime + 0.1);
+        
+        // Quick fade out for sparkle effect
+        gainNode.gain.setValueAtTime(0.3, audioContext.currentTime);
+        gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.3);
+        
+        oscillator.start(audioContext.currentTime);
+        oscillator.stop(audioContext.currentTime + 0.3);
+        
+        // Add a second harmonics tone for extra sparkle
+        const oscillator2 = audioContext.createOscillator();
+        const gainNode2 = audioContext.createGain();
+        
+        oscillator2.connect(gainNode2);
+        gainNode2.connect(audioContext.destination);
+        
+        oscillator2.type = 'triangle';
+        oscillator2.frequency.setValueAtTime(2400, audioContext.currentTime);
+        oscillator2.frequency.exponentialRampToValueAtTime(3600, audioContext.currentTime + 0.1);
+        
+        gainNode2.gain.setValueAtTime(0.15, audioContext.currentTime);
+        gainNode2.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.25);
+        
+        oscillator2.start(audioContext.currentTime);
+        oscillator2.stop(audioContext.currentTime + 0.25);
+        
+    } catch (error) {
+        // Silently fail if audio is not supported
+        console.log('Audio feedback not available');
+    }
+}
+
+// Trigger both haptic and sound feedback
+function triggerCompletionFeedback() {
+    triggerHaptic();
+    playSparkleSound();
+}
+
 // Check auth state on load
 async function checkAuthState() {
     const { data: { session } } = await supabaseClient.auth.getSession();
@@ -98,7 +163,7 @@ function updateUIForRole() {
         }
         // Show points for children
         if (pointsBadge) {
-            pointsBadge.textContent = `⭐ ${userPoints} points`;
+            pointsBadge.textContent = `⭐ ${userPoints} 积分`;
             pointsBadge.style.display = 'inline-block';
         }
         // Hide pending tab for children
@@ -192,14 +257,14 @@ function renderProfiles(profiles) {
     if (profiles.length === 0) {
         container.innerHTML = `
             <div class="empty-profiles">
-                <p>No heroes yet. Be the first!</p>
+                <p>还没有小英雄呢。成为第一个吧！</p>
             </div>
         `;
         return;
     }
     
     container.innerHTML = profiles.map(profile => `
-        <div class="profile-card" onclick="selectProfile('${escapeHtml(profile.display_name)}', '${escapeHtml(profile.email)}')" role="button" tabindex="0" aria-label="选择用户 ${escapeHtml(profile.display_name)}">
+        <div class="profile-card" onclick="selectProfile('${escapeHtml(profile.display_name)}', '${escapeHtml(profile.email)}')" role="button" tabindex="0" aria-label="选择 ${escapeHtml(profile.display_name)}">
             <div class="profile-avatar">
                 ${getInitials(profile.display_name)}
             </div>
@@ -276,12 +341,12 @@ async function handleProfileLogin() {
     const password = document.getElementById('loginPassword').value;
     
     if (!password) {
-        showError('Please enter your password');
+        showError('请输入密码');
         return;
     }
     
     if (!selectedProfile || !selectedProfile.email) {
-        showError('No profile selected');
+        showError('没有选择用户');
         return;
     }
     
@@ -299,7 +364,7 @@ async function handleProfileLogin() {
         document.getElementById('loginPassword').value = '';
         selectedProfile = null;
     } catch (error) {
-        showError('Login failed: ' + error.message);
+        showError('登录失败：' + error.message);
         console.error('Login error:', error);
     }
 }
@@ -309,12 +374,12 @@ async function handleSignup() {
     const password = document.getElementById('signupPassword').value;
     
     if (!displayName || !password) {
-        showError('Please fill in all fields');
+        showError('请填写所有内容');
         return;
     }
     
     if (password.length < 6) {
-        showError('Password must be at least 6 characters');
+        showError('密码至少需要6个字');
         return;
     }
     
@@ -340,7 +405,7 @@ async function handleSignup() {
                 .eq('id', data.user.id);
             
             if (profileError) {
-                console.error('Error updating profile email:', profileError);
+                console.error('更新资料出错：', profileError);
             }
         }
         
@@ -348,7 +413,7 @@ async function handleSignup() {
             currentUser = data.user;
             showMainContent();
         } else {
-            showError('Account created successfully!');
+            showError('创建成功！');
             await loadProfiles();
             backToProfiles();
         }
@@ -356,7 +421,7 @@ async function handleSignup() {
         document.getElementById('signupDisplayName').value = '';
         document.getElementById('signupPassword').value = '';
     } catch (error) {
-        showError('Sign up failed: ' + error.message);
+        showError('注册失败：' + error.message);
         console.error('Sign up error:', error);
     }
 }
@@ -374,7 +439,7 @@ async function handleLogout() {
         showAuthSection();
         loadProfiles();
     } catch (error) {
-        showError('Logout failed: ' + error.message);
+        showError('退出失败：' + error.message);
         console.error('Logout error:', error);
     }
 }
@@ -394,14 +459,14 @@ async function fetchTasks() {
 
         renderTasks(tasks);
     } catch (error) {
-        showError('Failed to load tasks: ' + error.message);
+        showError('加载失败：' + error.message);
         console.error('Error fetching tasks:', error);
     }
 }
 
 async function addTask() {
     if (currentRole !== 'parent') {
-        showError('Only parents can add new chores!');
+        showError('只有爸爸妈妈可以添加新任务！');
         return;
     }
     
@@ -429,7 +494,7 @@ async function addTask() {
         input.value = '';
         input.focus();
     } catch (error) {
-        showError('Failed to add task: ' + error.message);
+        showError('添加失败：' + error.message);
         console.error('Error adding task:', error);
     }
 }
@@ -458,7 +523,7 @@ async function completeTask(id) {
                 .single();
             
             if (fetchError) {
-                console.error('Error fetching current points:', fetchError);
+                console.error('获取积分出错：', fetchError);
             } else {
                 const currentPoints = profile?.total_points || 0;
                 const newPoints = currentPoints + 10;
@@ -470,7 +535,7 @@ async function completeTask(id) {
                     .eq('id', currentUser.id);
                 
                 if (pointsError) {
-                    console.error('Error updating points:', pointsError);
+                    console.error('更新积分出错：', pointsError);
                 } else {
                     // Update local state
                     userPoints = newPoints;
@@ -479,16 +544,19 @@ async function completeTask(id) {
                     if (currentRole === 'child') {
                         const pointsBadge = document.getElementById('userPoints');
                         if (pointsBadge) {
-                            pointsBadge.textContent = `⭐ ${userPoints} points`;
+                            pointsBadge.textContent = `⭐ ${userPoints} 积分`;
                         }
                     }
                     
-                    showSuccess('Task completed! +10 points earned!');
+                    // Trigger haptic and sound feedback
+                    triggerCompletionFeedback();
+                    
+                    showSuccess('任务完成！+10积分！');
                 }
             }
         }
     } catch (error) {
-        showError('Failed to complete task: ' + error.message);
+        showError('完成失败：' + error.message);
         console.error('Error completing task:', error);
     }
 }
@@ -509,13 +577,13 @@ function renderTasks(tasks) {
         availableContainer.innerHTML = `
             <div class="empty-state">
                 <div class="empty-state-icon">🎉</div>
-                <p>All caught up! No chores pending.</p>
+                <p>太棒了！没有待做的家务了。</p>
             </div>
         `;
     } else {
         availableContainer.innerHTML = availableTasks.map(task => `
             <div class="task-item">
-                <button class="complete-btn" onclick="completeTask('${task.id}')" title="Mark as complete" aria-label="完成任务: ${escapeHtml(task.title)}"></button>
+                <button class="complete-btn" onclick="completeTask('${task.id}')" title="完成" aria-label="完成: ${escapeHtml(task.title)}"></button>
                 <span class="task-text">${escapeHtml(task.title)}</span>
             </div>
         `).join('');
@@ -525,13 +593,13 @@ function renderTasks(tasks) {
         completedContainer.innerHTML = `
             <div class="empty-state">
                 <div class="empty-state-icon">💪</div>
-                <p>No completed chores yet. Get to work, hero!</p>
+                <p>还没有完成的家务呢。加油，小英雄！</p>
             </div>
         `;
     } else {
         completedContainer.innerHTML = completedTasks.map(task => `
             <div class="task-item completed">
-                <button class="complete-btn" title="Completed" aria-label="已完成: ${escapeHtml(task.title)}" disabled></button>
+                <button class="complete-btn" title="已完成" aria-label="已完成: ${escapeHtml(task.title)}" disabled></button>
                 <span class="task-text">${escapeHtml(task.title)}</span>
             </div>
         `).join('');
@@ -553,7 +621,7 @@ async function loadRewards() {
 
         renderRewards(rewards || []);
     } catch (error) {
-        showError('Failed to load rewards: ' + error.message);
+        showError('加载失败：' + error.message);
         console.error('Error fetching rewards:', error);
     }
 }
@@ -565,7 +633,7 @@ function renderRewards(rewards) {
         container.innerHTML = `
             <div class="empty-state" style="background: rgba(255,255,255,0.1); border-radius: 16px; backdrop-filter: blur(10px);">
                 <div class="empty-state-icon">🎁</div>
-                <p>No rewards available yet. Check back later!</p>
+                <p>暂时没有奖品，过来看看吧！</p>
             </div>
         `;
         return;
@@ -577,13 +645,13 @@ function renderRewards(rewards) {
             <div class="reward-card">
                 <div class="reward-icon">${escapeHtml(reward.icon || '🎁')}</div>
                 <div class="reward-title">${escapeHtml(reward.title)}</div>
-                <div class="reward-cost">${reward.cost} points</div>
+                <div class="reward-cost">${reward.cost} 积分</div>
                 <button 
                     class="buy-btn ${!canAfford ? 'insufficient' : ''}" 
                     onclick="buyReward('${reward.id}', ${reward.cost})"
                     ${!canAfford ? 'disabled' : ''}
                 >
-                    ${canAfford ? 'Buy' : 'Not enough points'}
+                    ${canAfford ? '兑换' : '积分不够'}
                 </button>
             </div>
         `;
@@ -592,12 +660,12 @@ function renderRewards(rewards) {
 
 async function buyReward(rewardId, cost) {
     if (currentRole !== 'child') {
-        showError('Only children can buy rewards!');
+        showError('只有小朋友可以兑换奖品！');
         return;
     }
     
     if (userPoints < cost) {
-        showError('Not enough points!');
+        showError('积分不够哦！');
         return;
     }
     
@@ -628,12 +696,12 @@ async function buyReward(rewardId, cost) {
         userPoints -= cost;
         
         // Update UI
-        document.getElementById('userPoints').textContent = `⭐ ${userPoints} points`;
+        document.getElementById('userPoints').textContent = `⭐ ${userPoints} 积分`;
         loadRewards(); // Refresh to update button states
         
-        showSuccess('Goal Reached! Ask Dad for your reward.');
+        showSuccess('兑换成功！找爸爸领取奖品吧！');
     } catch (error) {
-        showError('Failed to buy reward: ' + error.message);
+        showError('兑换失败：' + error.message);
         console.error('Error buying reward:', error);
     }
 }
@@ -661,7 +729,7 @@ async function loadPendingRedemptions() {
 
         renderPendingRedemptions(redemptions || []);
     } catch (error) {
-        showError('Failed to load pending redemptions: ' + error.message);
+        showError('加载失败：' + error.message);
         console.error('Error fetching pending redemptions:', error);
     }
 }
@@ -685,8 +753,8 @@ function renderPendingRedemptions(redemptions) {
             <div class="pending-item">
                 <div class="pending-icon">${escapeHtml(redemption.rewards?.icon || '🎁')}</div>
                 <div class="pending-info">
-                    <div class="pending-reward-title">${escapeHtml(redemption.rewards?.title || 'Unknown Reward')}</div>
-                    <div class="pending-child-name">Requested by: ${escapeHtml(redemption.profiles?.display_name || 'Unknown')}</div>
+                    <div class="pending-reward-title">${escapeHtml(redemption.rewards?.title || '未知奖品')}</div>
+                    <div class="pending-child-name">兑换人：${escapeHtml(redemption.profiles?.display_name || '未知')}</div>
                     <div class="pending-date">${date}</div>
                 </div>
                 <button class="approve-btn" onclick="approveRedemption('${redemption.id}')">
@@ -699,7 +767,7 @@ function renderPendingRedemptions(redemptions) {
 
 async function approveRedemption(redemptionId) {
     if (currentRole !== 'parent') {
-        showError('Only parents can approve redemptions!');
+        showError('只有爸爸妈妈可以确认领取！');
         return;
     }
     
@@ -715,10 +783,10 @@ async function approveRedemption(redemptionId) {
         
         if (error) throw error;
         
-        showSuccess('Redemption approved!');
+        showSuccess('已确认领取！');
         loadPendingRedemptions(); // Refresh the list
     } catch (error) {
-        showError('Failed to approve redemption: ' + error.message);
+        showError('确认失败：' + error.message);
         console.error('Error approving redemption:', error);
     }
 }

@@ -21,8 +21,8 @@
 </head>
 <body>
     <div class="container">
-        <h1>🦸 Hero Tasks</h1>
-        <p class="subtitle">Be the hero of your household!</p>
+        <h1>🦸‍♀️ 家务小妞</h1>
+        <p class="subtitle">谁是家务小英雄？</p>
 
         <div id="errorMessage"></div>
         <div id="successMessage"></div>
@@ -32,41 +32,41 @@
             
             <!-- Profile Selection (Netflix-style) -->
             <div id="profileSelection" class="profile-selection">
-                <h2>Who's cleaning?</h2>
+                <h2>谁是家务小英雄？</h2>
                 <div id="profilesList" class="profiles-list">
-                    <div class="loading">Loading profiles...</div>
+                    <div class="loading">正在加载...</div>
                 </div>
                 <button class="add-profile-btn" onclick="showSignupForm()" aria-label="添加新用户">
                     <span class="add-icon">+</span>
-                    <span>Add Hero</span>
+                    <span>添加小英雄</span>
                 </button>
             </div>
 
             <!-- Password Prompt (shown after selecting profile) -->
             <div id="passwordPrompt" class="auth-form" style="display: none;">
-                <h2>Welcome back, <span id="selectedProfileName"></span>!</h2>
+                <h2>欢迎回来，<span id="selectedProfileName"></span>！</h2>
                 <div class="input-group">
                     <input 
                         type="password" 
                         id="loginPassword" 
-                        placeholder="Enter your password" 
+                        placeholder="输入密码" 
                         autocomplete="current-password"
                     >
                 </div>
-                <button onclick="handleProfileLogin()" aria-label="登录">Login</button>
+                <button onclick="handleProfileLogin()" aria-label="登录">登录</button>
                 <p class="auth-toggle">
-                    <a href="#" onclick="backToProfiles(event)">← Back to profiles</a>
+                    <a href="#" onclick="backToProfiles(event)">← 返回</a>
                 </p>
             </div>
 
             <!-- Sign Up Form (for new users) -->
             <div id="signupForm" class="auth-form" style="display: none;">
-                <h2>Create Your Hero Profile</h2>
+                <h2>创建你的小英雄档案</h2>
                 <div class="input-group">
                     <input 
                         type="text" 
                         id="signupDisplayName" 
-                        placeholder="Display Name (e.g., SuperMom)" 
+                        placeholder="显示名称（例如：家务小妞）" 
                         autocomplete="name"
                     >
                 </div>
@@ -74,13 +74,13 @@
                     <input 
                         type="password" 
                         id="signupPassword" 
-                        placeholder="Password" 
+                        placeholder="密码" 
                         autocomplete="new-password"
                     >
                 </div>
-                <button onclick="handleSignup()" aria-label="创建个人资料">Create Profile</button>
+                <button onclick="handleSignup()" aria-label="创建个人资料">创建</button>
                 <p class="auth-toggle">
-                    <a href="#" onclick="backToProfiles(event)">← Back to profiles</a>
+                    <a href="#" onclick="backToProfiles(event)">← 返回</a>
                 </p>
             </div>
 
@@ -93,19 +93,19 @@
                     <span id="userDisplayName"></span>
                     <span id="userPoints" class="points-badge" style="display: none;"></span>
                 </div>
-                <button class="logout-btn" onclick="handleLogout()" aria-label="退出登录">Logout</button>
+                <button class="logout-btn" onclick="handleLogout()" aria-label="退出登录">退出</button>
             </div>
 
             <!-- Tab Navigation -->
             <div class="tab-nav">
                 <button id="tasksTab" class="tab-btn active" onclick="switchTab('tasks')" aria-label="任务列表">
-                    📋 Tasks
+                    📋 任务
                 </button>
                 <button id="shopTab" class="tab-btn" onclick="switchTab('shop')" aria-label="奖励商店">
-                    🎁 Reward Shop
+                    🎁 奖品商店
                 </button>
                 <button id="pendingTab" class="tab-btn parent-only" onclick="switchTab('pending')" style="display: none;" aria-label="待处理兑换">
-                    🔔 Pending Redemptions
+                    🔔 待领取奖品
                 </button>
             </div>
 
@@ -117,36 +117,36 @@
                         <input 
                             type="text" 
                             id="taskInput" 
-                            placeholder="What chore needs to be done?" 
+                            placeholder="要做什么家务呢？" 
                             autocomplete="off"
                         >
-                        <button id="addBtn" onclick="addTask()" aria-label="添加家务">Add Chore</button>
+                        <button id="addBtn" onclick="addTask()" aria-label="添加家务">添加</button>
                     </div>
                 </div>
 
                 <!-- Chores Container -->
                 <div class="chores-container">
-                    <!-- Available Chores -->
+                    <!-- 待做家务 -->
                     <div class="chore-section">
                         <div class="section-header">
                             <div class="section-icon available-icon">📋</div>
-                            <span class="section-title">Available Chores</span>
+                            <span class="section-title">待做家务</span>
                             <span class="task-count" id="availableCount">0</span>
                         </div>
                         <div id="availableTasks" class="task-list">
-                            <div class="loading">Loading tasks...</div>
+                            <div class="loading">正在加载...</div>
                         </div>
                     </div>
 
-                    <!-- Completed Chores -->
+                    <!-- 已完成家务 -->
                     <div class="chore-section">
                         <div class="section-header">
                             <div class="section-icon completed-icon">✅</div>
-                            <span class="section-title">Completed Chores</span>
+                            <span class="section-title">已完成家务</span>
                             <span class="task-count" id="completedCount">0</span>
                         </div>
                         <div id="completedTasks" class="task-list">
-                            <div class="loading">Loading tasks...</div>
+                            <div class="loading">正在加载...</div>
                         </div>
                     </div>
                 </div>
@@ -155,22 +155,22 @@
             <!-- Reward Shop Tab (Child view) -->
             <div id="shopSection" class="tab-content" style="display: none;">
                 <div class="shop-header">
-                    <h2>🎁 Reward Shop</h2>
-                    <p class="shop-subtitle">Spend your hard-earned points on awesome rewards!</p>
+                    <h2>🎁 奖品商店</h2>
+                    <p class="shop-subtitle">用积分兑换你喜欢的奖品吧！</p>
                 </div>
                 <div id="rewardsGrid" class="rewards-grid">
-                    <div class="loading">Loading rewards...</div>
+                    <div class="loading">正在加载...</div>
                 </div>
             </div>
 
             <!-- Pending Redemptions Tab (Parent view) -->
             <div id="pendingSection" class="tab-content" style="display: none;">
                 <div class="pending-header">
-                    <h2>🔔 Pending Redemptions</h2>
-                    <p class="pending-subtitle">Approve rewards after you've given them to your child.</p>
+                    <h2>🔔 待领取奖品</h2>
+                    <p class="pending-subtitle">给小朋友奖品后，点击确认</p>
                 </div>
                 <div id="pendingRedemptions" class="pending-list">
-                    <div class="loading">Loading pending redemptions...</div>
+                    <div class="loading">正在加载...</div>
                 </div>
             </div>
         </div>
@@ -179,9 +179,11 @@
     <!-- Realtime Indicator -->
     <div id="realtimeIndicator" class="realtime-indicator" style="display: none;">
         <div class="pulse"></div>
-        <span>Realtime Sync Active</span>
+        <span>实时同步中</span>
     </div>
 
     <script src="app.js"></script>
+    
+    <div class="version-footer">Ver. 0223</div>
 </body>
 </html>
