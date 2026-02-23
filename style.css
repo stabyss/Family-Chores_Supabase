@@ -320,6 +320,11 @@ h1 {
     color: #333;
 }
 
+.header-buttons {
+    display: flex;
+    gap: 10px;
+}
+
 .change-password-btn {
     padding: 8px 16px;
     min-width: 48px;
@@ -624,21 +629,21 @@ h1 {
         text-align: center;
     }
     
-    .logout-btn {
+    .header-buttons {
         width: 100%;
-        min-height: 44px;
+        flex-direction: column;
+        gap: 8px;
     }
     
     .change-password-btn {
         width: 100%;
         min-height: 44px;
         margin-right: 0;
-        margin-bottom: 8px;
     }
     
-    .user-header {
-        flex-direction: column;
-        gap: 10px;
+    .logout-btn {
+        width: 100%;
+        min-height: 44px;
     }
     
     .chore-section {
