@@ -1,9 +1,20 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="zh-CN">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Hero Tasks</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="theme-color" content="#667eea">
+    <meta name="description" content="家务小妞 - 家庭任务管理应用">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <title>家务小妞</title>
+    <!-- PWA Manifest -->
+    <link rel="manifest" href="manifest.json">
+    <!-- Icons - Available: 96x96, 192x192, 512x512 PNG + icon.ico -->
+    <link rel="icon" type="image/x-icon" href="icons/icon.ico">
+    <link rel="icon" type="image/png" sizes="96x96" href="icons/icon-96x96.png">
+    <link rel="icon" type="image/png" sizes="192x192" href="icons/icon-192x192.png">
+    <link rel="apple-touch-icon" sizes="192x192" href="icons/icon-192x192.png">
     <!-- Supabase JS CDN -->
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
     <link rel="stylesheet" href="style.css">
@@ -25,7 +36,7 @@
                 <div id="profilesList" class="profiles-list">
                     <div class="loading">Loading profiles...</div>
                 </div>
-                <button class="add-profile-btn" onclick="showSignupForm()">
+                <button class="add-profile-btn" onclick="showSignupForm()" aria-label="添加新用户">
                     <span class="add-icon">+</span>
                     <span>Add Hero</span>
                 </button>
@@ -42,7 +53,7 @@
                         autocomplete="current-password"
                     >
                 </div>
-                <button onclick="handleProfileLogin()">Login</button>
+                <button onclick="handleProfileLogin()" aria-label="登录">Login</button>
                 <p class="auth-toggle">
                     <a href="#" onclick="backToProfiles(event)">← Back to profiles</a>
                 </p>
@@ -67,7 +78,7 @@
                         autocomplete="new-password"
                     >
                 </div>
-                <button onclick="handleSignup()">Create Profile</button>
+                <button onclick="handleSignup()" aria-label="创建个人资料">Create Profile</button>
                 <p class="auth-toggle">
                     <a href="#" onclick="backToProfiles(event)">← Back to profiles</a>
                 </p>
@@ -82,18 +93,18 @@
                     <span id="userDisplayName"></span>
                     <span id="userPoints" class="points-badge" style="display: none;"></span>
                 </div>
-                <button class="logout-btn" onclick="handleLogout()">Logout</button>
+                <button class="logout-btn" onclick="handleLogout()" aria-label="退出登录">Logout</button>
             </div>
 
             <!-- Tab Navigation -->
             <div class="tab-nav">
-                <button id="tasksTab" class="tab-btn active" onclick="switchTab('tasks')">
+                <button id="tasksTab" class="tab-btn active" onclick="switchTab('tasks')" aria-label="任务列表">
                     📋 Tasks
                 </button>
-                <button id="shopTab" class="tab-btn" onclick="switchTab('shop')">
+                <button id="shopTab" class="tab-btn" onclick="switchTab('shop')" aria-label="奖励商店">
                     🎁 Reward Shop
                 </button>
-                <button id="pendingTab" class="tab-btn parent-only" onclick="switchTab('pending')" style="display: none;">
+                <button id="pendingTab" class="tab-btn parent-only" onclick="switchTab('pending')" style="display: none;" aria-label="待处理兑换">
                     🔔 Pending Redemptions
                 </button>
             </div>
@@ -109,7 +120,7 @@
                             placeholder="What chore needs to be done?" 
                             autocomplete="off"
                         >
-                        <button id="addBtn" onclick="addTask()">Add Chore</button>
+                        <button id="addBtn" onclick="addTask()" aria-label="添加家务">Add Chore</button>
                     </div>
                 </div>
 

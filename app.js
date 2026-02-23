@@ -199,7 +199,7 @@ function renderProfiles(profiles) {
     }
     
     container.innerHTML = profiles.map(profile => `
-        <div class="profile-card" onclick="selectProfile('${escapeHtml(profile.display_name)}', '${escapeHtml(profile.email)}')">
+        <div class="profile-card" onclick="selectProfile('${escapeHtml(profile.display_name)}', '${escapeHtml(profile.email)}')" role="button" tabindex="0" aria-label="选择用户 ${escapeHtml(profile.display_name)}">
             <div class="profile-avatar">
                 ${getInitials(profile.display_name)}
             </div>
@@ -515,7 +515,7 @@ function renderTasks(tasks) {
     } else {
         availableContainer.innerHTML = availableTasks.map(task => `
             <div class="task-item">
-                <button class="complete-btn" onclick="completeTask('${task.id}')" title="Mark as complete"></button>
+                <button class="complete-btn" onclick="completeTask('${task.id}')" title="Mark as complete" aria-label="完成任务: ${escapeHtml(task.title)}"></button>
                 <span class="task-text">${escapeHtml(task.title)}</span>
             </div>
         `).join('');
@@ -531,7 +531,7 @@ function renderTasks(tasks) {
     } else {
         completedContainer.innerHTML = completedTasks.map(task => `
             <div class="task-item completed">
-                <button class="complete-btn" title="Completed"></button>
+                <button class="complete-btn" title="Completed" aria-label="已完成: ${escapeHtml(task.title)}" disabled></button>
                 <span class="task-text">${escapeHtml(task.title)}</span>
             </div>
         `).join('');
@@ -819,4 +819,20 @@ function setupRealtimeSubscription() {
         .subscribe((status) => {
             console.log('Realtime subscription status:', status);
         });
+}
+
+// ============================================
+// Service Worker Registration (PWA)
+// ============================================
+
+if ('serviceWorker' in navigator) {
+    window.addEventListener('load', () => {
+        navigator.serviceWorker.register('sw.js')
+            .then((registration) => {
+                console.log('Service Worker registered:', registration);
+            })
+            .catch((error) => {
+                console.log('Service Worker registration failed:', error);
+            });
+    });
 }

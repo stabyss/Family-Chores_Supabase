@@ -12,8 +12,17 @@ body {
 }
 
 .container {
-    max-width: 900px;
+    max-width: 100%;
+    width: 100%;
     margin: 0 auto;
+    padding: 0 10px;
+}
+
+@media (min-width: 600px) {
+    .container {
+        max-width: 900px;
+        padding: 0 20px;
+    }
 }
 
 h1 {
@@ -295,8 +304,10 @@ h1 {
 
 .logout-btn {
     padding: 8px 16px;
+    min-width: 48px;
+    min-height: 48px;
     background: #f0f0f0;
-    color: #666;
+    color: #333;
     border: none;
     border-radius: 8px;
     font-size: 14px;
@@ -323,12 +334,13 @@ h1 {
 .tab-btn {
     flex: 1;
     padding: 12px 20px;
+    min-height: 48px;
     background: transparent;
     border: none;
     border-radius: 8px;
     font-size: 15px;
     font-weight: 600;
-    color: #666;
+    color: #555;
     cursor: pointer;
     transition: all 0.3s ease;
 }
@@ -414,36 +426,138 @@ h1 {
 }
 
 @media (max-width: 600px) {
+    body {
+        padding: 10px;
+    }
+    
+    h1 {
+        font-size: 1.8rem;
+    }
+    
+    .subtitle {
+        font-size: 0.9rem;
+        margin-bottom: 20px;
+    }
+    
     .chores-container {
         grid-template-columns: 1fr;
     }
     
     .auth-form {
         padding: 30px 20px;
+        margin: 0 10px;
     }
     
     .profile-avatar,
     .add-icon {
-        width: 90px;
-        height: 90px;
-        font-size: 2rem;
+        width: 80px;
+        height: 80px;
+        font-size: 1.8rem;
     }
     
     .profile-selection h2 {
-        font-size: 1.5rem;
+        font-size: 1.3rem;
+        margin-bottom: 25px;
     }
     
     .profiles-list {
-        gap: 20px;
+        gap: 15px;
+    }
+    
+    .profile-card {
+        padding: 12px;
+    }
+    
+    .profile-name {
+        font-size: 1rem;
     }
     
     .tab-nav {
         flex-wrap: wrap;
+        gap: 6px;
+        padding: 6px;
     }
     
     .tab-btn {
         font-size: 13px;
-        padding: 10px 15px;
+        padding: 12px 10px;
+        min-height: 44px;
+    }
+    
+    .input-group {
+        flex-direction: column;
+    }
+    
+    #addBtn {
+        width: 100%;
+        padding: 14px;
+    }
+    
+    .task-item {
+        padding: 12px;
+    }
+    
+    .complete-btn {
+        width: 48px;
+        height: 48px;
+        min-width: 48px;
+        min-height: 48px;
+    }
+    
+    .buy-btn, .approve-btn {
+        min-height: 48px;
+    }
+    
+    .reward-card {
+        padding: 20px 15px;
+    }
+    
+    .reward-icon {
+        font-size: 3rem;
+    }
+    
+    .pending-item {
+        flex-direction: column;
+        text-align: center;
+        gap: 15px;
+    }
+    
+    .pending-info {
+        width: 100%;
+    }
+    
+    .approve-btn {
+        width: 100%;
+    }
+    
+    .user-header {
+        flex-direction: column;
+        gap: 10px;
+        text-align: center;
+    }
+    
+    .logout-btn {
+        width: 100%;
+        min-height: 44px;
+    }
+    
+    .chore-section {
+        padding: 15px;
+    }
+    
+    .section-title {
+        font-size: 1rem;
+    }
+    
+    .shop-header h2, .pending-header h2 {
+        font-size: 1.4rem;
+    }
+    
+    .realtime-indicator {
+        bottom: 10px;
+        right: 10px;
+        padding: 8px 15px;
+        font-size: 12px;
     }
 }
 
@@ -530,8 +644,10 @@ h1 {
 }
 
 .complete-btn {
-    width: 36px;
-    height: 36px;
+    width: 48px;
+    height: 48px;
+    min-width: 48px;
+    min-height: 48px;
     border: 2px solid #667eea;
     background: white;
     border-radius: 50%;
@@ -662,6 +778,7 @@ h1 {
 .buy-btn {
     width: 100%;
     padding: 12px;
+    min-height: 48px;
     background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
     color: white;
     border: none;
@@ -758,6 +875,7 @@ h1 {
 
 .approve-btn {
     padding: 12px 24px;
+    min-height: 48px;
     background: linear-gradient(135deg, #4caf50 0%, #45a049 100%);
     color: white;
     border: none;
